@@ -58,6 +58,7 @@ spec:
 | prometheusMetricsPort  | Port on which to serve prometheus metrics.                | Set to 0 to disable, > 0 to enable. | TCP port | 9094 |
 | etcdv3CompactionPeriod | The period between etcdv3 compaction requests. Only applies when using etcd as the {{site.prodname}} datastore. | Set to 0 to disable, > 0 to enable |  [Duration string][parse-duration] | 10m |
 | controllers            | Enabled controllers and their settings                    |                                    | [Controllers](#controllers) | |
+| DebugProfilePort       | Enables serving of memory and CPU profiles on the specified port at `/debug/pprof/`. |         | int32  | Disabled   |
 
 #### Controllers
 
