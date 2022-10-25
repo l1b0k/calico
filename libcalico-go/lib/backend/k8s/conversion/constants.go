@@ -36,6 +36,9 @@ const (
 	// AnnotationPodIPs is the annotation set by the Amazon VPC CNI plugin.
 	AnnotationAWSPodIPs = "vpc.amazonaws.com/pod-ips"
 
+	// AnnotationAliyunPodIPs is the annotation set by the Aliyun CNI plugin.
+	AnnotationAliyunPodIPs = "k8s.aliyun.com/pod-ips"
+
 	// AnnotationContainerID stores the container ID of the pod.  This allows us to disambiguate different pods
 	// that have the same name and namespace.  For example, stateful set pod that is restarted.  May be missing
 	// on older Pods.

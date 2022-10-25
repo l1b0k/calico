@@ -173,6 +173,9 @@ func IsFinished(pod *kapiv1.Pod) bool {
 			// from the pod.
 			log.Debug("Pod is being deleted and IPs have been removed by AWS CNI.")
 			return true
+		} else if ips, ok := pod.Annotations[AnnotationAliyunPodIPs]; ok && ips == "" {
+			log.Debug("Pod is being deleted and IPs have been removed by Aliyun CNI.")
+			return true
 		}
 	}
 	switch pod.Status.Phase {
@@ -192,7 +195,7 @@ func (c converter) IsHostNetworked(pod *kapiv1.Pod) bool {
 }
 
 func (c converter) HasIPAddress(pod *kapiv1.Pod) bool {
-	return pod.Status.PodIP != "" || pod.Annotations[AnnotationPodIP] != "" || pod.Annotations[AnnotationAWSPodIPs] != ""
+	return pod.Status.PodIP != "" || pod.Annotations[AnnotationPodIP] != "" || pod.Annotations[AnnotationAWSPodIPs] != "" || pod.Annotations[AnnotationAliyunPodIPs] != ""
 	// Note: we don't need to check PodIPs and AnnotationPodIPs here, because those cannot be
 	// non-empty if the corresponding singular field is empty.
 }
@@ -219,6 +222,9 @@ func getPodIPs(pod *kapiv1.Pod) ([]*cnet.IPNet, error) {
 		podIPs = append(podIPs, ip)
 	} else if ips := pod.Annotations[AnnotationAWSPodIPs]; ips != "" {
 		logc.WithField("ips", ips).Debug("No PodStatus IPs, use AWS VPC annotation")
+		podIPs = append(podIPs, strings.Split(ips, ",")...)
+	} else if ips := pod.Annotations[AnnotationAliyunPodIPs]; ips != "" {
+		logc.WithField("ips", ips).Debug("No PodStatus IPs, use Aliyun annotation")
 		podIPs = append(podIPs, strings.Split(ips, ",")...)
 	} else {
 		logc.Debug("Pod has no IP")
